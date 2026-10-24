@@ -1,0 +1,15 @@
+.scratch/
+/processor
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+kubeconfig
+**/__pycache__/
+*.py[cod]
+node_modules/
+.DS_Store
+*.test
+coverage*.out

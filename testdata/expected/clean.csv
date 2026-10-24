@@ -1,0 +1,4 @@
+source_ordinal,transaction_id,occurred_at,currency,amount
+1,TX-1001,2026-10-24T09:30:00Z,EUR,149.90
+2,TX-1002,2026-10-24T09:35:00Z,GBP,-24.50
+5,TX-1001,2026-10-24T09:45:00Z,USD,0.00

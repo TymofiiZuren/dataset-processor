@@ -1,0 +1,4 @@
+source_ordinal,transaction_id,occurred_at,currency,amount,reasons
+3,TX-1003,not-a-date,USD,19.99,invalid_timestamp
+4,TX-1004,2026-10-24T09:40:00Z,EUR,1.234,invalid_amount
+6,TX-1005,2026-10-24T10:00:00Z,CAD,85,invalid_currency
