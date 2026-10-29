@@ -6,7 +6,7 @@ Primary signal met for the bounded local recovery slice: multi-chunk replacement
 
 Implementation refinements: 8 MiB upload buffering before API-to-object relay; expired preparation retries the full bounded input with a fresh token rather than a saved per-batch cursor; two-pass verified download serving; no automatic cleanup/read leases because no deletion is performed. Download expiry and seven-day metadata access do not physically remove data or release quotas. Larger/direct uploads and coordinated cleanup remain later work.
 
-Not implemented/validated: AWS provisioning/permissions/service semantics, larger-file browser uploads, performance/memory capacity benchmarks, full object-emulator replacement recovery, mixed-version rolling upgrades, full assistive-technology audit, public publication. No CI/CD or hosted automation added. Local Git history was subsequently reconstructed at the owner's request; see ../HISTORY.md. No push or file deletion was performed.
+Not implemented/validated: AWS provisioning/permissions/service semantics, larger-file browser uploads, performance/memory capacity benchmarks, full object-emulator replacement recovery, mixed-version rolling upgrades, full assistive-technology audit, public publication. No CI/CD or hosted automation added. Local Git history was subsequently reconstructed at the owner's request; see ../HISTORY.md. No file deletion was performed. GitHub publication was subsequently authorized; see ../HISTORY.md.
 
 ## AWS connection milestone — 2026-10-25
 
@@ -27,3 +27,7 @@ Added a read-only timeline to owner job pages and status polling, using existing
 ## Owner operations overview — 2026-10-29
 
 Added a private, read-only home-page snapshot of visible job outcomes and selected-preparation running chunk leases, split by live/expired. Owner boundaries, metadata expiry and obsolete/terminal chunk exclusion are tested against PostgreSQL. The UI identifies the observation time, manual refresh, and the distinction between lease state and runtime health. Failures display unavailable state rather than zero metrics. No pod health, queue depth, storage usage, new schema, or hosted monitoring is claimed.
+
+## GitHub publication — 2026-10-29
+
+The private repository is [TymofiiZuren/dataset-processor](https://github.com/TymofiiZuren/dataset-processor). Five milestone branches were published and merged through PRs, preserving the original reconstructed commits and retaining the branches. Publication and merge dates are current, not backdated. The history document records each PR and the validation boundary. No hosted CI/CD, release ceremony, AWS deployment or cloud spend was introduced.
