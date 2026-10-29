@@ -62,6 +62,8 @@ type view struct {
 	RequestKey, ReturnTo string
 	Downloads, CanCancel bool
 	Stage                string
+	History              []historyItem
+	HistoryError         bool
 }
 type resultView struct {
 	ID       string
@@ -130,7 +132,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	switch {
 	case r.Method == "GET" && r.URL.Path == "/":
-		s.render(w, 200, view{SignedIn: true, CSRF: csrf})
+		s.home(w, r, csrf)
 	case r.Method == "GET" && r.URL.Path == "/sample.csv":
 		w.Header().Set("Content-Type", "text/csv; charset=utf-8")
 		w.Header().Set("Content-Disposition", `attachment; filename="sample-transactions.csv"`)
