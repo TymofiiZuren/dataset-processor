@@ -66,6 +66,8 @@ type view struct {
 	HistoryError         bool
 	Activity             activityView
 	ActivityError        bool
+	Overview             *durable.Overview
+	OverviewError        bool
 }
 type resultView struct {
 	ID       string

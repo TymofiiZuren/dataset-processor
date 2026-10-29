@@ -11,6 +11,13 @@ type historyItem struct {
 func (s *Server) home(w http.ResponseWriter, r *http.Request, csrf string) {
 	v := view{SignedIn: true, CSRF: csrf}
 	if s.runtime != nil {
+		overview, err := s.runtime.Store.Overview(r.Context(), s.runtime.Owner)
+		if err != nil {
+			v.OverviewError = true
+			w.Header().Set("Retry-After", "5")
+		} else {
+			v.Overview = &overview
+		}
 		jobs, e := s.runtime.Store.RecentJobs(r.Context(), s.runtime.Owner, 20)
 		if e != nil {
 			v.HistoryError = true
@@ -22,7 +29,7 @@ func (s *Server) home(w http.ResponseWriter, r *http.Request, csrf string) {
 		}
 	}
 	status := http.StatusOK
-	if v.HistoryError {
+	if v.HistoryError || v.OverviewError {
 		status = http.StatusServiceUnavailable
 	}
 	s.render(w, status, v)

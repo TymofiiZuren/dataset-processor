@@ -55,11 +55,11 @@ func TestOwnerHomeHistoryAndUnavailableState(t *testing.T) {
 		s.ServeHTTP(w, req)
 		return w
 	}
-	if w := get(false); w.Code != 200 || strings.Contains(w.Body.String(), mine.ID) {
+	if w := get(false); w.Code != 200 || (strings.Contains(w.Body.String(), mine.ID) || strings.Contains(w.Body.String(), "Processing overview")) {
 		t.Fatal("history exposed before sign-in")
 	}
 	w := get(true)
-	if w.Code != 200 || !strings.Contains(w.Body.String(), "Recent jobs") || !strings.Contains(w.Body.String(), "/jobs/"+mine.ID) || !strings.Contains(w.Body.String(), "Cancelled · no result published") || strings.Contains(w.Body.String(), foreign.ID) {
+	if w.Code != 200 || !strings.Contains(w.Body.String(), "Processing overview") || !strings.Contains(w.Body.String(), "Recent jobs") || !strings.Contains(w.Body.String(), "/jobs/"+mine.ID) || !strings.Contains(w.Body.String(), "Cancelled · no result published") || strings.Contains(w.Body.String(), foreign.ID) {
 		t.Fatal("owned recent job missing or foreign job exposed")
 	}
 	s.runtime.Owner = durable.ID()
@@ -69,7 +69,7 @@ func TestOwnerHomeHistoryAndUnavailableState(t *testing.T) {
 	}
 	store.Close()
 	w = get(true)
-	if w.Code != 503 || w.Header().Get("Retry-After") == "" || !strings.Contains(w.Body.String(), "Job history is temporarily unavailable") || strings.Contains(w.Body.String(), "No jobs yet") {
+	if w.Code != 503 || w.Header().Get("Retry-After") == "" || !strings.Contains(w.Body.String(), "Processing overview is temporarily unavailable") || !strings.Contains(w.Body.String(), "Job history is temporarily unavailable") || strings.Contains(w.Body.String(), "No jobs yet") {
 		t.Fatal("history failure hidden as empty list")
 	}
 }
