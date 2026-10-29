@@ -110,7 +110,16 @@ func (s *Server) job(w http.ResponseWriter, r *http.Request, csrf string) {
 	}
 	if len(pieces) == 1 && r.Method == "GET" {
 		v := view{SignedIn: true, CSRF: csrf, Job: &j, Stage: stage(j.State), CanCancel: j.State != "succeeded" && j.State != "failed" && j.State != "cancelled", Downloads: j.State == "succeeded" && time.Now().Before(j.Expires)}
-		s.render(w, 200, v)
+		activity, err := s.runtime.Store.Activity(r.Context(), s.runtime.Owner, j.ID, j.Revision)
+		status := http.StatusOK
+		if err != nil {
+			v.ActivityError = true
+			status = http.StatusServiceUnavailable
+			w.Header().Set("Retry-After", "5")
+		} else {
+			v.Activity = activitySummary(activity)
+		}
+		s.render(w, status, v)
 		return
 	}
 	if len(pieces) != 2 {
@@ -118,8 +127,14 @@ func (s *Server) job(w http.ResponseWriter, r *http.Request, csrf string) {
 		return
 	}
 	if pieces[1] == "status" && r.Method == "GET" {
+		activity, err := s.runtime.Store.Activity(r.Context(), s.runtime.Owner, j.ID, j.Revision)
+		if err != nil {
+			http.Error(w, "Job activity temporarily unavailable; retry", 503)
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]any{"state": j.State, "stage": stage(j.State), "revision": j.Revision, "committed": j.Committed, "parts": j.Parts, "accepted": j.Accepted, "rejected": j.Rejected, "error": j.Error, "updated": j.Updated.Format("2006-01-02 15:04:05 MST")})
+		json.NewEncoder(w).Encode(map[string]any{"activity": activitySummary(activity), "state": j.State, "stage": stage(j.State), "revision": j.Revision, "committed": j.Committed, "parts": j.Parts, "accepted": j.Accepted, "rejected": j.Rejected, "error": j.Error, "updated": j.Updated.Format("2006-01-02 15:04:05 MST")})
 		return
 	}
 	if pieces[1] == "cancel" && r.Method == "POST" {
