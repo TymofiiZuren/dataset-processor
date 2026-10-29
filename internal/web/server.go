@@ -64,6 +64,8 @@ type view struct {
 	Stage                string
 	History              []historyItem
 	HistoryError         bool
+	Activity             activityView
+	ActivityError        bool
 }
 type resultView struct {
 	ID       string
