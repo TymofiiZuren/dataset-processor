@@ -1,0 +1,22 @@
+name: dataset-processor-local
+services:
+  postgres:
+    image: postgres:18.0-alpine@sha256:48c8ad3a7284b82be4482a52076d47d879fd6fb084a1cbfccbd551f9331b0e40
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: processor
+    ports:
+      - "127.0.0.1:${PROCESSOR_PG_PORT:-15439}:5432"
+    volumes:
+      - processor_pg:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d processor"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  moto:
+    image: motoserver/moto:5.1.15@sha256:8860b18917e1ee4d067df19a406ae95dc26037e6965d5b499e1cffd33755b914
+    ports:
+      - "127.0.0.1:${PROCESSOR_MOTO_PORT:-15019}:5000"
+volumes:
+  processor_pg:

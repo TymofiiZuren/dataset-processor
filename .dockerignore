@@ -1,0 +1,8 @@
+**/.scratch
+**/.env
+**/.env.*
+**/*password*
+**/*credential*
+.git
+node_modules
+processor
